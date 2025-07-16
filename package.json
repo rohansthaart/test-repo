@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node dist/bin.js",
+    "start": "node bin.js",
     "dev": "ts-node-dev --respawn --transpile-only src/bin.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
