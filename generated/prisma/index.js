@@ -318,6 +318,10 @@ const config = {
         "fromEnvVar": null,
         "value": "windows",
         "native": true
+      },
+      {
+        "fromEnvVar": null,
+        "value": "debian-openssl-3.0.x"
       }
     ],
     "previewFeatures": [],
@@ -335,6 +339,7 @@ const config = {
     "db"
   ],
   "activeProvider": "mysql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
@@ -343,8 +348,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"mysql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nenum TourType {\n  HIKING\n  TREKKING\n  CAMPING\n  EXPEDITION\n  GUIDED\n  SOLO\n}\n\nenum Difficulty {\n  EASY\n  MODERATE\n  HARD\n  EXTREME\n}\n\nmodel User {\n  id          String     @id @default(cuid())\n  email       String     @unique\n  name        String?\n  password    String\n  contact     String?\n  role        Role       @default(USER)\n  createdAt   DateTime   @default(now())\n  updatedAt   DateTime   @updatedAt\n  joinedTours UserTour[]\n  myTours     Tour[] // tour created by the user as a guide\n  reviews     Review[]\n}\n\nenum Role {\n  USER\n  GUIDE\n  ADMIN\n}\n\nmodel Tour {\n  id             String     @id @default(cuid())\n  title          String\n  location       String\n  description    String\n  price          Int\n  rating         Float      @default(0)\n  noOfUsersRated Int        @default(0)\n  difficulty     Difficulty @default(EASY)\n  distanceInKm   Float\n  durationInHrs  Float\n  altitude       String\n  season         String\n\n  minGroupSize Int\n  maxGroupSize Int\n\n  startingLat Float\n  startingLng Float\n  endingLat   Float?\n  endingLng   Float?\n\n  route              String //model \n  highlights         Json\n  itinerary          Json\n  feeIncluded        Json\n  feeNotIncluded     Json\n  hikingEssentials   Json\n  cancellationPolicy String?\n\n  meetingPoint    String?\n  meetingPointUrl String?\n  meetingTime     String?\n  contactDetails  Json?\n\n  thumbnailUrl String\n  tags         Json\n  isActive     Boolean  @default(true)\n  tourType     TourType\n\n  guideId String\n  guide   User   @relation(fields: [guideId], references: [id])\n\n  joinedUsers UserTour[]\n  gallery     Gallery[]\n  reviews     Review[]\n  dates       TourDate[]\n  routes      TourRoute[]\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n\nmodel UserTour {\n  userId   String\n  tourId   String\n  joinedAt DateTime @default(now())\n  user     User     @relation(fields: [userId], references: [id])\n  tour     Tour     @relation(fields: [tourId], references: [id])\n\n  @@id([userId, tourId])\n}\n\nmodel TourDate {\n  id       String    @id @default(cuid())\n  date     DateTime\n  deadline DateTime?\n  tourId   String\n  tour     Tour      @relation(fields: [tourId], references: [id])\n}\n\nmodel Gallery {\n  id       String @id @default(cuid())\n  imageUrl String\n  tourId   String\n  tour     Tour   @relation(fields: [tourId], references: [id])\n}\n\nmodel TourRoute {\n  id               String  @id @default(cuid())\n  name             String\n  description      String?\n  imageUrl         String?\n  latLngs          Json\n  elevationProfile Json?\n\n  tourId String\n  tour   Tour   @relation(fields: [tourId], references: [id])\n}\n\nmodel Review {\n  id        String   @id @default(cuid())\n  rating    Int\n  comment   String?\n  userId    String\n  tourId    String\n  createdAt DateTime @default(now())\n\n  user User @relation(fields: [userId], references: [id])\n  tour Tour @relation(fields: [tourId], references: [id])\n\n  @@unique([userId, tourId]) // Prevent multiple reviews by the same user for the same tour\n}\n",
-  "inlineSchemaHash": "1bffe007138abbcbb87a5a772c5d706a4801e4836c2fd972918829742869a216",
+  "inlineSchema": "generator client {\n  provider      = \"prisma-client-js\"\n  output        = \"../src/generated/prisma\"\n  binaryTargets = [\"native\", \"debian-openssl-3.0.x\"]\n}\n\ndatasource db {\n  provider = \"mysql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nenum TourType {\n  HIKING\n  TREKKING\n  CAMPING\n  EXPEDITION\n  GUIDED\n  SOLO\n}\n\nenum Difficulty {\n  EASY\n  MODERATE\n  HARD\n  EXTREME\n}\n\nmodel User {\n  id          String     @id @default(cuid())\n  email       String     @unique\n  name        String?\n  password    String\n  contact     String?\n  role        Role       @default(USER)\n  createdAt   DateTime   @default(now())\n  updatedAt   DateTime   @updatedAt\n  joinedTours UserTour[]\n  myTours     Tour[] // tour created by the user as a guide\n  reviews     Review[]\n}\n\nenum Role {\n  USER\n  GUIDE\n  ADMIN\n}\n\nmodel Tour {\n  id             String     @id @default(cuid())\n  title          String\n  location       String\n  description    String\n  price          Int\n  rating         Float      @default(0)\n  noOfUsersRated Int        @default(0)\n  difficulty     Difficulty @default(EASY)\n  distanceInKm   Float\n  durationInHrs  Float\n  altitude       String\n  season         String\n\n  minGroupSize Int\n  maxGroupSize Int\n\n  startingLat Float\n  startingLng Float\n  endingLat   Float?\n  endingLng   Float?\n\n  route              String //model \n  highlights         Json\n  itinerary          Json\n  feeIncluded        Json\n  feeNotIncluded     Json\n  hikingEssentials   Json\n  cancellationPolicy String?\n\n  meetingPoint    String?\n  meetingPointUrl String?\n  meetingTime     String?\n  contactDetails  Json?\n\n  thumbnailUrl String\n  tags         Json\n  isActive     Boolean  @default(true)\n  tourType     TourType\n\n  guideId String\n  guide   User   @relation(fields: [guideId], references: [id])\n\n  joinedUsers UserTour[]\n  gallery     Gallery[]\n  reviews     Review[]\n  dates       TourDate[]\n  routes      TourRoute[]\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n\nmodel UserTour {\n  userId   String\n  tourId   String\n  joinedAt DateTime @default(now())\n  user     User     @relation(fields: [userId], references: [id])\n  tour     Tour     @relation(fields: [tourId], references: [id])\n\n  @@id([userId, tourId])\n}\n\nmodel TourDate {\n  id       String    @id @default(cuid())\n  date     DateTime\n  deadline DateTime?\n  tourId   String\n  tour     Tour      @relation(fields: [tourId], references: [id])\n}\n\nmodel Gallery {\n  id       String @id @default(cuid())\n  imageUrl String\n  tourId   String\n  tour     Tour   @relation(fields: [tourId], references: [id])\n}\n\nmodel TourRoute {\n  id               String  @id @default(cuid())\n  name             String\n  description      String?\n  imageUrl         String?\n  latLngs          Json\n  elevationProfile Json?\n\n  tourId String\n  tour   Tour   @relation(fields: [tourId], references: [id])\n}\n\nmodel Review {\n  id        String   @id @default(cuid())\n  rating    Int\n  comment   String?\n  userId    String\n  tourId    String\n  createdAt DateTime @default(now())\n\n  user User @relation(fields: [userId], references: [id])\n  tour Tour @relation(fields: [tourId], references: [id])\n\n  @@unique([userId, tourId]) // Prevent multiple reviews by the same user for the same tour\n}\n",
+  "inlineSchemaHash": "25a3f18524d4854ba84faa8662f351083ee00d0e9981659c1de70a9565182d65",
   "copyEngine": true
 }
 
@@ -385,6 +390,10 @@ Object.assign(exports, Prisma)
 // file annotations for bundling tools to include these files
 path.join(__dirname, "query_engine-windows.dll.node");
 path.join(process.cwd(), "src/generated/prisma/query_engine-windows.dll.node")
+
+// file annotations for bundling tools to include these files
+path.join(__dirname, "libquery_engine-debian-openssl-3.0.x.so.node");
+path.join(process.cwd(), "src/generated/prisma/libquery_engine-debian-openssl-3.0.x.so.node")
 // file annotations for bundling tools to include these files
 path.join(__dirname, "schema.prisma");
 path.join(process.cwd(), "src/generated/prisma/schema.prisma")
