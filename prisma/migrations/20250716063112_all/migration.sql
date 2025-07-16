@@ -1,20 +1,11 @@
 -- CreateTable
-CREATE TABLE `Guide` (
-    `id` VARCHAR(191) NOT NULL,
-    `email` VARCHAR(191) NOT NULL,
-    `name` VARCHAR(191) NULL,
-    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updatedAt` DATETIME(3) NOT NULL,
-
-    UNIQUE INDEX `Guide_email_key`(`email`),
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
 CREATE TABLE `User` (
     `id` VARCHAR(191) NOT NULL,
     `email` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NULL,
+    `password` VARCHAR(191) NOT NULL,
+    `contact` VARCHAR(191) NULL,
+    `role` ENUM('USER', 'GUIDE', 'ADMIN') NOT NULL DEFAULT 'USER',
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -58,11 +49,19 @@ CREATE TABLE `Tour` (
     `isActive` BOOLEAN NOT NULL DEFAULT true,
     `tourType` ENUM('HIKING', 'TREKKING', 'CAMPING', 'EXPEDITION', 'GUIDED', 'SOLO') NOT NULL,
     `guideId` VARCHAR(191) NOT NULL,
-    `userId` VARCHAR(191) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
     PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `UserTour` (
+    `userId` VARCHAR(191) NOT NULL,
+    `tourId` VARCHAR(191) NOT NULL,
+    `joinedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+    PRIMARY KEY (`userId`, `tourId`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
@@ -106,14 +105,18 @@ CREATE TABLE `Review` (
     `tourId` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
+    UNIQUE INDEX `Review_userId_tourId_key`(`userId`, `tourId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
-ALTER TABLE `Tour` ADD CONSTRAINT `Tour_guideId_fkey` FOREIGN KEY (`guideId`) REFERENCES `Guide`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Tour` ADD CONSTRAINT `Tour_guideId_fkey` FOREIGN KEY (`guideId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Tour` ADD CONSTRAINT `Tour_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `UserTour` ADD CONSTRAINT `UserTour_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `UserTour` ADD CONSTRAINT `UserTour_tourId_fkey` FOREIGN KEY (`tourId`) REFERENCES `Tour`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `TourDate` ADD CONSTRAINT `TourDate_tourId_fkey` FOREIGN KEY (`tourId`) REFERENCES `Tour`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
