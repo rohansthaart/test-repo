@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginAsGuide = exports.loginUser = exports.registerUser = void 0;
+exports.getAllUsers = exports.getGuideProfile = exports.loginAsGuide = exports.loginUser = exports.registerUser = void 0;
 const auth_schema_1 = require("../schemas/auth.schema");
 const auth_service_1 = require("../services/auth.service");
 const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -35,7 +35,7 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 exports.registerUser = registerUser;
 const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const data = req.body;
-    const { success, error } = auth_schema_1.registerUserSchema.safeParse(data);
+    const { success, error } = auth_schema_1.loginUserSchema.safeParse(data);
     if (!success) {
         res
             .status(400)
@@ -71,3 +71,26 @@ const loginAsGuide = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.loginAsGuide = loginAsGuide;
+const getGuideProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const guideId = req.params.id;
+    try {
+        const guideProfile = yield auth_service_1.authService.getGuideProfile(guideId);
+        res.status(200).json(guideProfile);
+    }
+    catch (error) {
+        console.error("Error fetching guide profile:", error);
+        res.status(500).json({ error: "An error occurred while fetching the guide profile." });
+    }
+});
+exports.getGuideProfile = getGuideProfile;
+const getAllUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const users = yield auth_service_1.authService.getAllUsers();
+        res.status(200).json(users);
+    }
+    catch (error) {
+        console.error("Error fetching users:", error);
+        res.status(500).json({ error: "An error occurred while fetching users." });
+    }
+});
+exports.getAllUsers = getAllUsers;
