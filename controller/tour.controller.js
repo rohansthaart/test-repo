@@ -35,6 +35,10 @@ const getTours = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 },
                 skip,
                 take: pageSize,
+                include: {
+                    guide: { select: { id: true, name: true, email: true } },
+                    gallery: true,
+                },
             }),
             index_1.prisma.tour.count({ where: whereClause }),
         ]);
@@ -58,7 +62,7 @@ const createTour = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     var _a;
     const user = req.user;
     try {
-        const { title, location, description, price, difficulty, distanceInKm, durationInHrs, altitude, season, minGroupSize, maxGroupSize, startingLat, startingLng, endingLat, endingLng, route, highlights, itinerary, feeIncluded, feeNotIncluded, hikingEssentials, cancellationPolicy, meetingPoint, meetingPointUrl, meetingTime, contactDetails, tags, tourType, } = req.body;
+        const { title, location, description, price, difficulty, distanceInKm, durationInHrs, altitude, season, minGroupSize, maxGroupSize, startingLat, startingLng, endingLat, endingLng, route, highlights, itinerary, feeIncluded, feeNotIncluded, hikingEssentials, cancellationPolicy, meetingPoint, meetingPointUrl, meetingTime, contactDetails, tags, tourType, scheduledDate, } = req.body;
         let thumbnailFile;
         let galleryFiles = [];
         if (req.files && !Array.isArray(req.files)) {
@@ -72,6 +76,7 @@ const createTour = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         }
         const thumbnailUrl = `/uploads/${thumbnailFile.filename}`;
         const galleryImageUrls = galleryFiles.map((file) => `/uploads/${file.filename}`);
+        console.log(req.body);
         // Create the tour
         const newTour = yield index_1.prisma.tour.create({
             data: {
@@ -104,7 +109,10 @@ const createTour = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 thumbnailUrl,
                 tags: JSON.parse(tags),
                 tourType,
-                guideId: user === null || user === void 0 ? void 0 : user.id,
+                scheduledDate: scheduledDate,
+                guide: {
+                    connect: { id: user.id },
+                },
                 // Relations like gallery will be created next
             },
         });
