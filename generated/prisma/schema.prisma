@@ -1,0 +1,151 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+  // binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum TourType {
+  HIKING
+  TREKKING
+  CAMPING
+  EXPEDITION
+  GUIDED
+  SOLO
+}
+
+enum Difficulty {
+  EASY
+  MODERATE
+  HARD
+  EXTREME
+}
+
+model User {
+  id          String     @id @default(cuid())
+  email       String     @unique
+  name        String?
+  password    String
+  contact     String?
+  role        Role       @default(USER)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  joinedTours UserTour[]
+  myTours     Tour[] // tour created by the user as a guide
+  reviews     Review[]
+}
+
+enum Role {
+  USER
+  GUIDE
+  ADMIN
+}
+
+model Tour {
+  id             String     @id @default(cuid())
+  title          String
+  location       String
+  description    String
+  price          Int
+  rating         Float      @default(0)
+  noOfUsersRated Int        @default(0)
+  difficulty     Difficulty @default(EASY)
+  distanceInKm   Float
+  durationInHrs  Float
+  altitude       String
+  season         String
+
+  minGroupSize Int
+  maxGroupSize Int
+
+  startingLat Float
+  startingLng Float
+  endingLat   Float?
+  endingLng   Float?
+
+  route              String //model 
+  highlights         Json
+  itinerary          Json
+  feeIncluded        Json
+  feeNotIncluded     Json
+  hikingEssentials   Json
+  cancellationPolicy String?
+
+  meetingPoint    String?
+  meetingPointUrl String?
+  meetingTime     String?
+  contactDetails  Json?
+  scheduledDate   DateTime?
+
+  thumbnailUrl String
+  tags         Json
+  isActive     Boolean  @default(true)
+  tourType     TourType
+
+  guideId String
+  guide   User   @relation(fields: [guideId], references: [id])
+
+  joinedUsers UserTour[]
+  gallery     Gallery[]
+  reviews     Review[]
+  dates       TourDate[]
+  routes      TourRoute[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserTour {
+  userId   String
+  tourId   String
+  joinedAt DateTime @default(now())
+  user     User     @relation(fields: [userId], references: [id])
+  tour     Tour     @relation(fields: [tourId], references: [id])
+
+  @@id([userId, tourId])
+}
+
+model TourDate {
+  id       String    @id @default(cuid())
+  date     DateTime
+  deadline DateTime?
+  tourId   String
+  tour     Tour      @relation(fields: [tourId], references: [id])
+}
+
+model Gallery {
+  id       String @id @default(cuid())
+  imageUrl String
+  tourId   String
+  tour     Tour   @relation(fields: [tourId], references: [id])
+}
+
+model TourRoute {
+  id               String  @id @default(cuid())
+  name             String
+  description      String?
+  imageUrl         String?
+  latLngs          Json
+  elevationProfile Json?
+
+  tourId String
+  tour   Tour   @relation(fields: [tourId], references: [id])
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  rating    Int
+  comment   String?
+  userId    String
+  tourId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+  tour Tour @relation(fields: [tourId], references: [id])
+
+  @@unique([userId, tourId]) // Prevent multiple reviews by the same user for the same tour
+}
