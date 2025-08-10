@@ -81,6 +81,34 @@ class AuthService {
             return { guide, token };
         });
     }
+    getGuideProfile(guideId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const guide = yield index_1.prisma.user.findUnique({
+                where: { id: guideId },
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    role: true, // Assuming role is a field in the user model
+                    createdAt: true,
+                    updatedAt: true,
+                    contact: true,
+                    myTours: {
+                        where: { isActive: true },
+                    },
+                },
+            });
+            if (!guide) {
+                throw new Error("Guide not found.");
+            }
+            return guide;
+        });
+    }
+    getAllUsers() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield index_1.prisma.user.findMany();
+        });
+    }
 }
 exports.AuthService = AuthService;
 exports.authService = new AuthService();
