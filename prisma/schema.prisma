@@ -1,10 +1,11 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "./generated/prisma"
+  output   = "../src/generated/prisma"
+  // binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -25,17 +26,18 @@ enum Difficulty {
 }
 
 model User {
-  id          String     @id @default(cuid())
-  email       String     @unique
-  name        String?
-  password    String
-  contact     String?
-  role        Role       @default(USER)
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  joinedTours UserTour[]
-  myTours     Tour[] // tour created by the user as a guide
-  reviews     Review[]
+  id               String     @id @default(cuid())
+  email            String     @unique
+  name             String?
+  password         String
+  contact          String?
+  role             Role       @default(USER)
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  hikingExperience String?
+  joinedTours      UserTour[]
+  myTours          Tour[] // tour created by the user as a guide
+  reviews          Review[]
 }
 
 enum Role {
@@ -78,6 +80,7 @@ model Tour {
   meetingPointUrl String?
   meetingTime     String?
   contactDetails  Json?
+  scheduledDate   DateTime?
 
   thumbnailUrl String
   tags         Json
@@ -101,8 +104,8 @@ model UserTour {
   userId   String
   tourId   String
   joinedAt DateTime @default(now())
-  user User @relation(fields: [userId], references: [id])
-  tour Tour @relation(fields: [tourId], references: [id])
+  user     User     @relation(fields: [userId], references: [id])
+  tour     Tour     @relation(fields: [tourId], references: [id])
 
   @@id([userId, tourId])
 }
@@ -144,5 +147,6 @@ model Review {
 
   user User @relation(fields: [userId], references: [id])
   tour Tour @relation(fields: [tourId], references: [id])
+
   @@unique([userId, tourId]) // Prevent multiple reviews by the same user for the same tour
 }
