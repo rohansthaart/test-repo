@@ -29,7 +29,7 @@ class AuthService {
             return !!user;
         });
     }
-    registerUser(name, email, password) {
+    registerUser(name, email, password, hikingExperience, role) {
         return __awaiter(this, void 0, void 0, function* () {
             if (yield this.isUserExists(email)) {
                 throw new Error("User with this email already exists.");
@@ -40,6 +40,8 @@ class AuthService {
                     name,
                     email,
                     password: hashedPass,
+                    hikingExperience,
+                    role,
                 },
             });
             return newUser;
