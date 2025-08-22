@@ -16,20 +16,20 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     const data = req.body;
     const { success, error } = auth_schema_1.registerUserSchema.safeParse(data);
     if (!success) {
-        res
-            .status(400)
-            .json({ error: error.errors.map((e) => e.message).join(", ") });
+        console.log(error);
+        res.status(400).json({ error: error });
+        return;
     }
-    const { name, email, password } = data;
+    const { name, email, password, hikingExperience, userRole } = data;
     try {
-        const user = yield auth_service_1.authService.registerUser(name, email, password);
+        const user = yield auth_service_1.authService.registerUser(name, email, password, hikingExperience, userRole);
         res.status(201).json({ message: "User registered successfully.", user });
     }
     catch (error) {
         console.error("Registration Error:", error);
-        res
-            .status(500)
-            .json({ error: "An error occurred while registering the user." });
+        res.status(500).json({
+            error: (error === null || error === void 0 ? void 0 : error.message) || "An error occurred while registering the user.",
+        });
     }
 });
 exports.registerUser = registerUser;
@@ -79,7 +79,9 @@ const getGuideProfile = (req, res) => __awaiter(void 0, void 0, void 0, function
     }
     catch (error) {
         console.error("Error fetching guide profile:", error);
-        res.status(500).json({ error: "An error occurred while fetching the guide profile." });
+        res
+            .status(500)
+            .json({ error: "An error occurred while fetching the guide profile." });
     }
 });
 exports.getGuideProfile = getGuideProfile;
