@@ -89,7 +89,7 @@ const completeProfile = (req, res) => __awaiter(void 0, void 0, void 0, function
     try {
         const user = req.user;
         const data = req.body;
-        const { success, error } = yield auth_schema_1.completeProfileSchema.safeParse(data);
+        const { success, error } = auth_schema_1.completeProfileSchema.safeParse(data);
         if (!success) {
             res.status(400).json({ error: error });
             return;
