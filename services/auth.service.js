@@ -47,6 +47,66 @@ class AuthService {
             return newUser;
         });
     }
+    userExists(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield index_1.prisma.user.findUnique({
+                where: { id },
+            });
+            return !!user;
+        });
+    }
+    completeProfile(userId, profileData) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!(yield this.userExists(userId))) {
+                throw new Error("User not found.");
+            }
+            const profile = yield index_1.prisma.userProfile.upsert({
+                where: { userId }, // Ensure userId is unique in schema
+                update: {
+                    phoneNumber: profileData.phoneNumber,
+                    address: profileData.address,
+                    gender: profileData.gender,
+                    dateOfBirth: profileData.dateOfBirth,
+                    bio: profileData.bio,
+                    profilePictureUrl: profileData.profilePictureUrl,
+                    facebook: profileData.facebook,
+                    twitter: profileData.twitter,
+                    instagram: profileData.instagram,
+                    website: profileData.website,
+                    interests: profileData.interests,
+                },
+                create: {
+                    userId,
+                    phoneNumber: profileData.phoneNumber,
+                    address: profileData.address,
+                    gender: profileData.gender,
+                    dateOfBirth: profileData.dateOfBirth,
+                    bio: profileData.bio,
+                    profilePictureUrl: profileData.profilePictureUrl,
+                    facebook: profileData.facebook,
+                    twitter: profileData.twitter,
+                    instagram: profileData.instagram,
+                    website: profileData.website,
+                    interests: profileData.interests,
+                },
+            });
+            return profile;
+        });
+    }
+    getUserProfile(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield index_1.prisma.user.findUnique({
+                where: { id: userId },
+                include: {
+                    profile: true,
+                },
+            });
+            if (!user) {
+                throw new Error("User not found.");
+            }
+            return user;
+        });
+    }
     loginUser(email, password) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield index_1.prisma.user.findUnique({
