@@ -88,7 +88,7 @@ exports.getGuideProfile = getGuideProfile;
 const completeProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = req.user;
-        const profileData = auth_schema_1.completeProfileSchema.safeParse(req.body);
+        const profileData = yield auth_schema_1.completeProfileSchema.safeParse(req.body);
         if (!profileData.success) {
             res.status(400).json({ error: profileData.error });
             return;
