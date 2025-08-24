@@ -88,12 +88,13 @@ exports.getGuideProfile = getGuideProfile;
 const completeProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = req.user;
-        const profileData = yield auth_schema_1.completeProfileSchema.safeParse(req.body);
-        if (!profileData.success) {
-            res.status(400).json({ error: profileData.error });
+        const data = req.body;
+        const { success, error } = yield auth_schema_1.completeProfileSchema.safeParse(data);
+        if (!success) {
+            res.status(400).json({ error: error });
             return;
         }
-        yield auth_service_1.authService.completeProfile(user.id, profileData.data);
+        yield auth_service_1.authService.completeProfile(user.id, data);
         res.status(200).json({ message: "Profile completed successfully." });
     }
     catch (error) {
@@ -123,7 +124,9 @@ const getMyProfileDetail = (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
     catch (error) {
         console.error("Error fetching profile details:", error);
-        res.status(500).json({ error: "An error occurred while fetching profile details." });
+        res
+            .status(500)
+            .json({ error: "An error occurred while fetching profile details." });
     }
 });
 exports.getMyProfileDetail = getMyProfileDetail;
