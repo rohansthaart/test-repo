@@ -66,7 +66,9 @@ class AuthService {
                     phoneNumber: profileData.phoneNumber,
                     address: profileData.address,
                     gender: profileData.gender,
-                    dateOfBirth: profileData.dateOfBirth,
+                    dateOfBirth: profileData.dateOfBirth
+                        ? new Date(profileData.dateOfBirth)
+                        : undefined,
                     bio: profileData.bio,
                     profilePictureUrl: profileData.profilePictureUrl,
                     facebook: profileData.facebook,
@@ -80,7 +82,9 @@ class AuthService {
                     phoneNumber: profileData.phoneNumber,
                     address: profileData.address,
                     gender: profileData.gender,
-                    dateOfBirth: profileData.dateOfBirth,
+                    dateOfBirth: profileData.dateOfBirth
+                        ? new Date(profileData.dateOfBirth)
+                        : undefined,
                     bio: profileData.bio,
                     profilePictureUrl: profileData.profilePictureUrl,
                     facebook: profileData.facebook,
