@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllUsers = exports.getGuideProfile = exports.loginAsGuide = exports.loginUser = exports.registerUser = void 0;
+exports.getMyProfileDetail = exports.getAllUsers = exports.completeProfile = exports.getGuideProfile = exports.loginAsGuide = exports.loginUser = exports.registerUser = void 0;
 const auth_schema_1 = require("../schemas/auth.schema");
 const auth_service_1 = require("../services/auth.service");
 const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -85,6 +85,25 @@ const getGuideProfile = (req, res) => __awaiter(void 0, void 0, void 0, function
     }
 });
 exports.getGuideProfile = getGuideProfile;
+const completeProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = req.user;
+        const profileData = auth_schema_1.completeProfileSchema.safeParse(req.body);
+        if (!profileData.success) {
+            res.status(400).json({ error: profileData.error });
+            return;
+        }
+        yield auth_service_1.authService.completeProfile(user.id, profileData.data);
+        res.status(200).json({ message: "Profile completed successfully." });
+    }
+    catch (error) {
+        console.error("Error completing profile:", error);
+        res
+            .status(500)
+            .json({ error: "An error occurred while completing the profile." });
+    }
+});
+exports.completeProfile = completeProfile;
 const getAllUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const users = yield auth_service_1.authService.getAllUsers();
@@ -96,3 +115,15 @@ const getAllUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.getAllUsers = getAllUsers;
+const getMyProfileDetail = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = req.user;
+        const profileDetails = yield auth_service_1.authService.getUserProfile(user.id);
+        res.status(200).json(profileDetails);
+    }
+    catch (error) {
+        console.error("Error fetching profile details:", error);
+        res.status(500).json({ error: "An error occurred while fetching profile details." });
+    }
+});
+exports.getMyProfileDetail = getMyProfileDetail;
