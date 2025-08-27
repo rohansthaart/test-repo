@@ -66,9 +66,7 @@ class AuthService {
                     phoneNumber: profileData.phoneNumber,
                     address: profileData.address,
                     gender: profileData.gender,
-                    dateOfBirth: profileData.dateOfBirth
-                        ? new Date(profileData.dateOfBirth)
-                        : undefined,
+                    dateOfBirth: profileData.dateOfBirth,
                     bio: profileData.bio,
                     profilePictureUrl: profileData.profilePictureUrl,
                     facebook: profileData.facebook,
@@ -82,9 +80,7 @@ class AuthService {
                     phoneNumber: profileData.phoneNumber,
                     address: profileData.address,
                     gender: profileData.gender,
-                    dateOfBirth: profileData.dateOfBirth
-                        ? new Date(profileData.dateOfBirth)
-                        : undefined,
+                    dateOfBirth: profileData.dateOfBirth,
                     bio: profileData.bio,
                     profilePictureUrl: profileData.profilePictureUrl,
                     facebook: profileData.facebook,
@@ -124,7 +120,7 @@ class AuthService {
                 throw new Error("Invalid password.");
             }
             const token = jsonwebtoken_1.default.sign({ userId: user.id }, process.env.JWT_SECRET || "secret", {
-                expiresIn: "1h",
+                expiresIn: "1d",
             });
             return { user, token };
         });
@@ -142,7 +138,7 @@ class AuthService {
                 throw new Error("Invalid password.");
             }
             const token = jsonwebtoken_1.default.sign({ guideId: guide.id }, process.env.JWT_SECRET || "secret", {
-                expiresIn: "1h",
+                expiresIn: "1d",
             });
             return { guide, token };
         });
