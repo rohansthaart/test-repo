@@ -44,7 +44,10 @@ class AuthService {
                     role,
                 },
             });
-            return newUser;
+            const token = jsonwebtoken_1.default.sign({ userId: newUser.id }, process.env.JWT_SECRET || "secret", {
+                expiresIn: "1d",
+            });
+            return { newUser, token };
         });
     }
     userExists(id) {
