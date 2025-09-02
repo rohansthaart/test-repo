@@ -22,9 +22,9 @@ router
   | User API
   |--------------------------------------------------
   */
-router.route("/review/:id").post((0, auth_middleware_1.restrictTo)(prisma_1.Role.USER), tour_controller_1.reviewTour); // Assuming you want to create a review for a tour
-router.route("/join/:id").post((0, auth_middleware_1.restrictTo)(prisma_1.Role.USER), tour_controller_1.joinTour); // Assuming you want to join a tour
-router.route("/leave/:id").post((0, auth_middleware_1.restrictTo)(prisma_1.Role.USER), tour_controller_1.leaveTour); // Assuming you want to leave a tour
+router.route("/review/:tourId").post((0, auth_middleware_1.restrictTo)(prisma_1.Role.USER), tour_controller_1.reviewTour); // Assuming you want to create a review for a tour
+router.route("/join/:tourId").post((0, auth_middleware_1.restrictTo)(prisma_1.Role.USER), tour_controller_1.joinTour); // Assuming you want to join a tour
+router.route("/leave/:tourId").post((0, auth_middleware_1.restrictTo)(prisma_1.Role.USER), tour_controller_1.leaveTour); // Assuming you want to leave a tour
 router.route("/joinedTours").get((0, auth_middleware_1.restrictTo)(prisma_1.Role.USER), tour_controller_1.getJoinedTours); // Assuming you want to get tours joined by the userq
 router
     .route("/:id")
