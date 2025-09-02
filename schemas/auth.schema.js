@@ -17,9 +17,7 @@ exports.completeProfileSchema = zod_1.z.object({
     phoneNumber: zod_1.z.string().min(10, "Phone number must be at least 10 characters long"),
     address: zod_1.z.string().min(10, "Address must be at least 10 characters long").optional(),
     gender: zod_1.z.enum(["MALE", "FEMALE", "OTHER"]).optional(),
-    dateOfBirth: zod_1.z.string().refine((date) => !isNaN(Date.parse(date)), {
-        message: "Invalid date of birth",
-    }),
+    dateOfBirth: zod_1.z.string().optional(),
     bio: zod_1.z.string().max(500, "Bio must be at most 500 characters long").optional(),
     profilePictureUrl: zod_1.z.string().url("Invalid URL").optional(),
     facebook: zod_1.z.string().url("Invalid URL").optional(),
