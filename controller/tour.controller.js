@@ -14,7 +14,7 @@ const index_1 = require("../index");
 // filters
 const getTours = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { page = "1", limit = "10", sortBy = "createdAt", sortOrder = "desc", search = "", tourType = "", } = req.query;
+        const { page = "1", limit = "10", sortBy = "createdAt", sortOrder = "desc", search = "", tourType = "" } = req.query;
         const pageNum = parseInt(page, 10);
         const pageSize = parseInt(limit, 10);
         const skip = (pageNum - 1) * pageSize;
@@ -48,6 +48,7 @@ const getTours = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 include: {
                     guide: { select: { id: true, name: true, email: true } },
                     gallery: true,
+                    _count: { select: { joinedUsers: true } },
                 },
             }),
             index_1.prisma.tour.count({ where: whereClause }),
@@ -264,13 +265,12 @@ exports.getTourById = getTourById;
 const joinTour = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req.user;
     const { tourId } = req.params;
-    console.log(tourId);
     try {
         const existingJoin = yield index_1.prisma.userTour.findUnique({
             where: {
                 userId_tourId: {
                     userId: user.id,
-                    tourId: tourId,
+                    tourId,
                 },
             },
         });
