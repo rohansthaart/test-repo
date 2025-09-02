@@ -14,19 +14,29 @@ const index_1 = require("../index");
 // filters
 const getTours = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { page = "1", limit = "10", sortBy = "createdAt", sortOrder = "desc", search = "", } = req.query;
+        const { page = "1", limit = "10", sortBy = "createdAt", sortOrder = "desc", search = "", tourType = "", } = req.query;
         const pageNum = parseInt(page, 10);
         const pageSize = parseInt(limit, 10);
         const skip = (pageNum - 1) * pageSize;
         const searchQuery = search.toString().trim();
-        const whereClause = searchQuery
-            ? {
+        const andConditions = [];
+        // Search condition (case-insensitive)
+        if (searchQuery) {
+            andConditions.push({
                 OR: [
                     { title: { contains: searchQuery, mode: "insensitive" } },
                     { location: { contains: searchQuery, mode: "insensitive" } },
+                    { description: { contains: searchQuery, mode: "insensitive" } }, // optional extra
                 ],
-            }
-            : {};
+            });
+        }
+        // Tour type filter
+        if (tourType) {
+            andConditions.push({
+                tourType: { equals: tourType.toString() },
+            });
+        }
+        const whereClause = andConditions.length > 0 ? { AND: andConditions } : {};
         const [tours, total] = yield Promise.all([
             index_1.prisma.tour.findMany({
                 where: whereClause,
@@ -254,12 +264,13 @@ exports.getTourById = getTourById;
 const joinTour = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req.user;
     const { tourId } = req.params;
+    console.log(tourId);
     try {
         const existingJoin = yield index_1.prisma.userTour.findUnique({
             where: {
                 userId_tourId: {
                     userId: user.id,
-                    tourId,
+                    tourId: tourId,
                 },
             },
         });
@@ -383,8 +394,8 @@ const getJoinedTours = (req, res) => __awaiter(void 0, void 0, void 0, function*
             tour: searchQuery
                 ? {
                     OR: [
-                        { title: { contains: searchQuery, mode: "insensitive" } },
-                        { location: { contains: searchQuery, mode: "insensitive" } },
+                        { title: { contains: searchQuery } },
+                        { location: { contains: searchQuery } },
                     ],
                 }
                 : undefined,
