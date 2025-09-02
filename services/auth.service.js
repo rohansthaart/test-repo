@@ -85,7 +85,9 @@ class AuthService {
                     phoneNumber: profileData.phoneNumber,
                     address: profileData.address,
                     gender: profileData.gender,
-                    dateOfBirth: profileData.dateOfBirth,
+                    dateOfBirth: (profileData === null || profileData === void 0 ? void 0 : profileData.dateOfBirth)
+                        ? new Date(profileData.dateOfBirth)
+                        : undefined,
                     bio: profileData.bio,
                     profilePictureUrl: profileData.profilePictureUrl,
                     facebook: profileData.facebook,
