@@ -63,6 +63,7 @@ class AuthService {
             if (!(yield this.userExists(userId))) {
                 throw new Error("User not found.");
             }
+            console.log(profileData === null || profileData === void 0 ? void 0 : profileData.profilePicturePath);
             const profile = yield index_1.prisma.userProfile.upsert({
                 where: { userId }, // Ensure userId is unique in schema
                 update: {
@@ -73,7 +74,7 @@ class AuthService {
                         ? new Date(profileData.dateOfBirth)
                         : undefined,
                     bio: profileData.bio,
-                    profilePictureUrl: profileData.profilePictureUrl,
+                    profilePictureUrl: profileData.profilePicturePath,
                     facebook: profileData.facebook,
                     twitter: profileData.twitter,
                     instagram: profileData.instagram,
@@ -89,7 +90,7 @@ class AuthService {
                         ? new Date(profileData.dateOfBirth)
                         : undefined,
                     bio: profileData.bio,
-                    profilePictureUrl: profileData.profilePictureUrl,
+                    profilePictureUrl: profileData.profilePicturePath,
                     facebook: profileData.facebook,
                     twitter: profileData.twitter,
                     instagram: profileData.instagram,
