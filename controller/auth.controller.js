@@ -86,9 +86,16 @@ const getGuideProfile = (req, res) => __awaiter(void 0, void 0, void 0, function
 });
 exports.getGuideProfile = getGuideProfile;
 const completeProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     try {
         const user = req.user;
         const data = req.body;
+        const profilePicture = yield ((_a = req.files) === null || _a === void 0 ? void 0 : _a["profilePicture"][0]);
+        const profilePicturePath = yield `/uploads/${profilePicture.filename}`;
+        if (profilePicturePath) {
+            data.profilePicturePath = profilePicturePath;
+        }
+        console.log(profilePicturePath);
         const { success, error } = auth_schema_1.completeProfileSchema.safeParse(data);
         if (!success) {
             res.status(400).json({ error: error });
