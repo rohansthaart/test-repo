@@ -19,7 +19,7 @@ exports.completeProfileSchema = zod_1.z.object({
     gender: zod_1.z.enum(["MALE", "FEMALE", "OTHER"]).optional(),
     dateOfBirth: zod_1.z.string().optional(),
     bio: zod_1.z.string().max(500, "Bio must be at most 500 characters long").optional(),
-    profilePictureUrl: zod_1.z.string().url("Invalid URL").optional(),
+    profilePicture: zod_1.z.any().optional(),
     facebook: zod_1.z.string().url("Invalid URL").optional(),
     twitter: zod_1.z.string().url("Invalid URL").optional(),
     instagram: zod_1.z.string().url("Invalid URL").optional(),
