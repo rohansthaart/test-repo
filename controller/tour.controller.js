@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getJoinedTours = exports.reviewTour = exports.leaveTour = exports.updateTour = exports.joinTour = exports.getTourById = exports.createTour = exports.getTours = void 0;
 const index_1 = require("../index");
-// filters
+// filters test
 const getTours = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { page = "1", limit = "10", sortBy = "createdAt", sortOrder = "desc", search = "", tourType = "" } = req.query;
