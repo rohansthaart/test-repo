@@ -24,5 +24,5 @@ exports.completeProfileSchema = zod_1.z.object({
     twitter: zod_1.z.string().url("Invalid URL").optional(),
     instagram: zod_1.z.string().url("Invalid URL").optional(),
     website: zod_1.z.string().url("Invalid URL").optional(),
-    interests: zod_1.z.array(zod_1.z.string()).min(1, "At least one interest is required").optional(),
+    interests: zod_1.z.array(zod_1.z.string()).optional(),
 });
